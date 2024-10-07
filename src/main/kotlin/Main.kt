@@ -48,9 +48,6 @@ fun App() {
         }) {
             Text(text)
         }
-        Surface {
-            nodes.forEach { DraggableNode((it.position)) }
-        }
     }
 }
 

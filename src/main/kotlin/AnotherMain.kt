@@ -1,7 +1,16 @@
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.PointerMatcher
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.onClick
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -15,13 +24,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.PointerButtons
+import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerKeyboardModifiers
+import androidx.compose.ui.input.pointer.isPrimaryPressed
+import androidx.compose.ui.input.pointer.isSecondaryPressed
+import androidx.compose.ui.input.pointer.isTertiaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.toSize
+import jdk.internal.org.jline.utils.InfoCmp.Capability.buttons
+
+data class Line(val start: Offset, val end: Offset?)
 
 @Composable
 fun MainScreen() {
@@ -43,16 +67,18 @@ fun MainScreen() {
                 .padding(top = 60.dp) // Отступ для верхнего меню
         ) {
             // Левая часть - Canvas (80% ширины экрана)
-            LeftCanvas(modifier = Modifier
-                .weight(0.80f) // 80% ширины экрана
-                .fillMaxHeight()
+            LeftCanvas(
+                modifier = Modifier
+                    .weight(0.80f) // 80% ширины экрана
+                    .fillMaxHeight()
             )
 
             // Правая часть - меню с прокруткой (20% ширины экрана, минимум 100px)
-            RightMenu(modifier = Modifier
-                .fillMaxHeight()
-                .widthIn(min = 300.dp) // Минимальная ширина 100 пикселей
-                .weight(0.20f) // 5% ширины экрана
+            RightMenu(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .widthIn(min = 300.dp) // Минимальная ширина 100 пикселей
+                    .weight(0.20f) // 5% ширины экрана
             )
         }
     }
@@ -89,25 +115,58 @@ fun TopMenu() {
 // Компонент для рисования на Canvas
 @Composable
 fun LeftCanvas(modifier: Modifier = Modifier) {
-    Surface(modifier) {
-        DraggableNode(Offset(0f, 0f))
+    // Переменные для хранения начала и конца линии
+    var lines by remember { mutableStateOf(mutableListOf<Line>()) }
+
+    Box(
+        modifier
+            .fillMaxSize()
+    )
+    {
+        DraggableNode(Offset(100f, 100f), lines)
+        DraggableNode(Offset(400f, 100f), lines)
+        Canvas(
+            Modifier
+                .background(color = Color.Blue)
+        ) {
+            lines.forEach { line ->
+                if (line.end != null) {
+                    drawLine(
+                        color = Color.Black,
+                        start = line.start,
+                        end = line.end,
+                        strokeWidth = 5f
+                    )
+                }
+            }
+        }
+
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DraggableNode(initialPosition: Offset) {
-    var position by remember { mutableStateOf(initialPosition) }
+fun DraggableNode(initialPosition: Offset, lines: MutableList<Line>) {
+    var buttonsEvent by remember { mutableStateOf(PointerEvent) }
+    var offset by remember { mutableStateOf(initialPosition) }
+    var leftButton by remember { mutableStateOf(Boolean) }
+    var rightButton by remember { mutableStateOf(Boolean) }
 
-    Canvas(modifier = Modifier
-        .fillMaxSize()
+    Box(modifier = Modifier
+        .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
         .pointerInput(Unit) {
-            detectDragGestures { change, dragAmount ->
-                // Обновляем позицию узла на основе перемещения мыши
-                position = Offset(position.x + dragAmount.x, position.y + dragAmount.y)
-                change.consume() // Отметить, что событие обработано
+            awaitPointerEventScope {
+                val event = awaitPointerEvent()
+                if (event.buttons.isSecondaryPressed) {
+                    println("правая")
+                }
             }
-        }) {
-        drawNode(Node(1, position))
+       }
+        .border(width = Dp.Hairline, color = Color.Black, shape = RectangleShape)
+
+    ) {
+        Text("Drag me")
+
     }
 }
 
