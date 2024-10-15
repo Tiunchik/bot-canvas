@@ -5,17 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33009763-ed76-4310-b330-39e320d03be9" name="Changes" comment="черновик">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Menu.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/CurrentLink.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Link.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/AnotherMain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/AnotherMain.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/AnotherMain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Menu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,8 +76,8 @@
     </key>
   </component>
   <component name="RunManager" selected="Kotlin.AnotherMainKt">
-    <configuration name="AnotherMainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="AnotherMainKt" />
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MainKt" />
       <module name="bot-canvas.main" />
       <method v="2">
         <option name="Make" enabled="true" />

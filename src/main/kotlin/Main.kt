@@ -1,5 +1,4 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,21 +14,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import dto.CurrentLink
 import dto.Node
 import dto.ViewModel
-import java.util.UUID
 
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        App2()
+    }
+}
 
 @Composable
-fun MainScreen(model: ViewModel = remember { ViewModel() }) {
+fun App2() {
+    MaterialTheme {
+        MainScreen()
+    }
+}
+
+@Composable
+fun MainScreen(
+    model: ViewModel = remember { ViewModel() }
+) {
     var boxColor: Color by remember { mutableStateOf(Color.Black) }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Верхнее меню
@@ -128,18 +138,5 @@ fun RightMenu(modifier: Modifier = Modifier, onMenuItemClick: (Node) -> Unit) {
                 Text("Добавить узел")
             }
         }
-    }
-}
-
-@Composable
-fun App2() {
-    MaterialTheme {
-        MainScreen()
-    }
-}
-
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App2()
     }
 }

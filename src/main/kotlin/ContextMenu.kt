@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import dto.CurrentLink
 import dto.ViewModel
 import java.util.UUID
 
@@ -34,6 +33,7 @@ fun ContextMenu(offset: IntOffset, nodeId: UUID, model: ViewModel, onDismissRequ
                 MenuItem("Create onText link") {
                     model.startNode.value = nodeId
                     model.isCreateLine.value = true
+                    println("захватили ноду")
                     onDismissRequest.invoke()
                 }
                 MenuItem("Action 2")

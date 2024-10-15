@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntSize
@@ -66,12 +67,12 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ViewModel) {
                                 startPosition = event.changes.first().position
                                 startPositionIsRemembered = true
 //                                isCursorInsideBox = cursorPosition.isInside(boxOffset, boxSize)
-
                             }
                         }
                     }
                 }
             ) {
+
                 drawLine(color = Color.Black, startPosition, cursorPosition)
                 // Здесь можно рисовать что-то с использованием позиции курсора, если нужно
             }

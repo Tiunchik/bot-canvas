@@ -1,6 +1,8 @@
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.PointerMatcher
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.Text
@@ -37,13 +39,13 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
     Box(modifier = Modifier
         .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
         .pointerInput(true) {
+            // ПЕРЕТАСКИВАНИЕ НОДЫ
             detectDragGestures { change, dragAmount ->
                 change.consume()  // Указатель мыши "захватывается"
                 // Обновляем положение элемента
                 node.offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
                 offset = node.offset
             }
-
         }
         .pointerInput(false) {
             awaitPointerEventScope {
@@ -58,12 +60,13 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
                             // Скрываем меню при любом другом клике
                             showMenu = false
                         }
-//                        if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
-//                            model.links.value = model.links.value
-//                                .plus(Link(model.startNode.value, node.id))
-//                                .toMutableList()
-//                            model.isCreateLine.value = false
-//                        }
+                        if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
+                            model.links.value = model.links.value
+                                .plus(Link(model.startNode.value, node.id))
+                                .toMutableList()
+                            model.isCreateLine.value = false
+                            println("создали связь")
+                        }
                     }
                 }
             }
