@@ -1,10 +1,13 @@
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.PointerMatcher
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +24,8 @@ import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import dto.Link
 import dto.Node
 import dto.ViewModel
@@ -28,7 +33,6 @@ import dto.ViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DraggableNode(model: ViewModel, node: Node, color: Color) {
-    val nodeId = node.id
     var offset by remember { mutableStateOf(node.offset) }
 
     // Переменная для управления отображением меню
@@ -38,6 +42,9 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
 
     Box(modifier = Modifier
         .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
+        .zIndex(NODE_LEVEL)
+        .width(node.width.dp)
+        .height(node.height.dp)
         .pointerInput(true) {
             // ПЕРЕТАСКИВАНИЕ НОДЫ
             detectDragGestures { change, dragAmount ->
@@ -60,23 +67,27 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
                             // Скрываем меню при любом другом клике
                             showMenu = false
                         }
+                        // логика создания связи между нодами, когда связь от первой ноды дотянули до второй и нажали левой клавишей на первой ноде
                         if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
-                            model.links.value = model.links.value
-                                .plus(Link(model.startNode.value, node.id))
-                                .toMutableList()
-                            model.isCreateLine.value = false
-                            println("создали связь")
+                            if (model.startNode.value != node.id) {
+                                model.links.value = model.links.value
+                                    .plus(Link(model.startNode.value, node.id))
+                                    .toMutableList()
+                                model.isCreateLine.value = false
+                                println("создали связь")
+                            } else println("нельзя создать связь к самому себе")
                         }
                     }
                 }
             }
         }
         .border(width = Dp.Hairline, color = color, shape = RectangleShape)
+        .background(Color.White)
 
     ) {
         Text(text = "Drag me")
         if (showMenu) {
-            ContextMenu(menuOffset, nodeId, model) { showMenu = false }
+            ContextMenu(menuOffset, node, model) { showMenu = false }
         }
     }
 }

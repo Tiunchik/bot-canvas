@@ -1,6 +1,13 @@
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +21,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import dto.CurrentLink
 import dto.Node
 import dto.ViewModel
@@ -23,60 +33,75 @@ import java.util.UUID
 // Компонент для рисования на Canvas
 @Composable
 fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ViewModel) {
-    var currentLine by remember { mutableStateOf(CurrentLink(Offset.Zero, Offset.Zero, UUID.randomUUID())) }
     var cursorPosition by remember { mutableStateOf(Offset.Zero) }
-    var startPosition by remember { mutableStateOf(Offset.Zero) }
-    var startPositionIsRemembered by remember { mutableStateOf(false) }
-    var boxSize by remember { mutableStateOf(IntSize.Zero) }
-    var boxOffset by remember { mutableStateOf(Offset.Zero) }
-    var isCursorInsideBox by remember { mutableStateOf(false) }
 
-    Box(modifier
-        .fillMaxSize()
-        .pointerInput(1) {
+    val windowSize = 2000.dp
+    val mapSize = 6000.dp
 
-        }
+    // Состояние для хранения смещения карты
+    var mapOffset by remember { mutableStateOf(Offset.Zero) }
+
+    // Основное окно
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.8f)
+            .background(Color.Gray)
+            // Жест перетаскивания карты
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    val newOffset = mapOffset + dragAmount
+
+                    // Ограничиваем смещение карты, чтобы не выйти за границы
+                    mapOffset = Offset(
+                        x = newOffset.x.coerceIn(-(mapSize.toPx() - windowSize.toPx()), 0f),
+                        y = newOffset.y.coerceIn(-(mapSize.toPx() - windowSize.toPx()), 0f)
+                    )
+                }
+            }
     ) {
-        model.nodes.value.forEach {
-            DraggableNode(model,it, color)
-        }
-        model.links.value.forEach {
-
-        }
-        /**
-         * Протягивание линии от кубика к кубику
-         */
-        if (model.isCreateLine.value) {
-            Canvas(modifier = Modifier
-                .fillMaxSize()
-//                .onGloballyPositioned { coordinates ->
-//                    // Получаем размер и положение Box на экране
-//                    boxSize = coordinates.size
-//                    boxOffset = Offset(coordinates.positionInWindow().x, coordinates.positionInWindow().y)
-//                }
-                .pointerInput(1) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent()
-                            cursorPosition = event.changes.first().position // Получаем позицию курсора
-                            if (event.buttons.isPrimaryPressed && startPositionIsRemembered) {
-                                model.isCreateLine.value = false
-                                startPositionIsRemembered = false
-                            }
-                            if (!startPositionIsRemembered) {
-                                startPosition = event.changes.first().position
-                                startPositionIsRemembered = true
-//                                isCursorInsideBox = cursorPosition.isInside(boxOffset, boxSize)
-                            }
+        // Большая карта
+        Box(modifier
+            .offset { IntOffset(mapOffset.x.toInt(), mapOffset.y.toInt()) } // Смещаем карту
+            .size(mapSize)
+            .zIndex(SURFACE_LEVEL)
+            .pointerInput(1) {
+                awaitPointerEventScope {
+                    //логика рисования линии между нодами после нажатие на создание линии в контексном меню
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        cursorPosition = event.changes.first().position // Получаем позицию курсора
+                        // Если мы создаём линию-связь и нажимаем левой клавишей мыши - прекратить
+                        if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
+                            model.isCreateLine.value = false
                         }
                     }
                 }
-            ) {
+            }
+        ) {
+            val linesMap = model.nodes.value.associateBy { it.id }
+            //Отрисовываем связи
+            model.links.value.forEach {
+                val start = linesMap[it.startNode]
+                val end = linesMap[it.endNode]
+                if (start != null && end != null) {
+                    NodeLine(start, end)
+                }
+            }
 
-                drawLine(color = Color.Black, startPosition, cursorPosition)
-                // Здесь можно рисовать что-то с использованием позиции курсора, если нужно
+            //Отрисовываем узлы
+            model.nodes.value.forEach {
+                DraggableNode(model, it, color)
+            }
+
+            //Протягивание линии от узла к узлу
+            if (model.isCreateLine.value) {
+                Line(model.startPosition.value, cursorPosition)
             }
         }
 
     }
+
+
 }

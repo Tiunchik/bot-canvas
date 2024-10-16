@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.zIndex
 import dto.Node
 import dto.ViewModel
 
@@ -89,6 +90,8 @@ fun TopMenu(model: ViewModel, block: (Color) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .zIndex(SYSTEM_LEVEL)
+            .background(Color.DarkGray)
             .height(60.dp)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -128,6 +131,7 @@ fun RightMenu(modifier: Modifier = Modifier, onMenuItemClick: (Node) -> Unit) {
 
     Column(
         modifier = modifier
+            .zIndex(SYSTEM_LEVEL)
             .verticalScroll(scrollState)
             .padding(16.dp)
             .background(Color.DarkGray)

@@ -5,11 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33009763-ed76-4310-b330-39e320d03be9" name="Changes" comment="черновик">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/AnotherMain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Constant.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Line.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/NodeLine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Menu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,20 +57,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build bot-canvas.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.AnotherMainKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.MainKt.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Java/bots&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build bot-canvas.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Kotlin.AnotherMainKt.executor": "Debug",
+    "Kotlin.MainKt.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Java/bot-canvas/src/main/kotlin"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Java\bot-canvas\src\main\kotlin" />
+    </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="dto" />
     </key>
@@ -75,7 +81,7 @@
       <recent name="androidx.compose.runtime" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.AnotherMainKt">
+  <component name="RunManager" selected="Kotlin.MainKt">
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MainKt" />
       <module name="bot-canvas.main" />
@@ -92,7 +98,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.AnotherMainKt" />
         <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>

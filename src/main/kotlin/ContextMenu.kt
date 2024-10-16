@@ -9,18 +9,26 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import dto.ViewModel
 import java.util.UUID
+import dto.Node
 
 @Composable
-fun ContextMenu(offset: IntOffset, nodeId: UUID, model: ViewModel, onDismissRequest: () -> Unit) {
+fun ContextMenu(offset: IntOffset, node: Node, model: ViewModel, onDismissRequest: () -> Unit) {
     Popup(
         offset = offset,
         onDismissRequest = onDismissRequest
@@ -31,9 +39,12 @@ fun ContextMenu(offset: IntOffset, nodeId: UUID, model: ViewModel, onDismissRequ
         ) {
             Column {
                 MenuItem("Create onText link") {
-                    model.startNode.value = nodeId
+                    model.startPosition.value = node.getNodeCenter()
+                    // логика начала создания линии
+                    model.startNode.value = node.id
                     model.isCreateLine.value = true
                     println("захватили ноду")
+                    // метод выключения меню (Popup)
                     onDismissRequest.invoke()
                 }
                 MenuItem("Action 2")
