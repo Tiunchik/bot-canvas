@@ -18,6 +18,7 @@ fun NodeLine(firstNode: Node, secondNode: Node) {
     Canvas(modifier = Modifier
         .zIndex(LINE_LEVEL)
     ) {
-        drawLine(color = Color.Black, firstNode.getNodeCenter(), secondNode.getNodeCenter())
+//        drawLine(color = Color.Black, firstNode.getNodeCenter(), secondNode.getNodeCenter())
+        drawArrow(firstNode.getNodeCenter(), secondNode.getNodeCenter(), color = Color.Black,)
     }
 }

@@ -19,7 +19,7 @@ import dto.ApplicationState
 import dto.Node
 
 @Composable
-fun ContextMenu(offset: IntOffset, node: Node, model: ApplicationState, onDismissRequest: () -> Unit) {
+fun ContextMenu(offset: IntOffset, node: Node, appState: ApplicationState, onDismissRequest: () -> Unit) {
     Popup(
         offset = offset,
         onDismissRequest = onDismissRequest
@@ -30,10 +30,17 @@ fun ContextMenu(offset: IntOffset, node: Node, model: ApplicationState, onDismis
         ) {
             Column {
                 MenuItem("Create onText link") {
-                    model.startPosition = node.getNodeCenter()
-                    // логика начала создания линии
-                    model.startNode = node.id
-                    model.isCreateLine = true
+
+                    appState.tempArrow.apply {
+                        isDraw = true
+                        startPoint = node.getNodeCenter()
+                        startNodeId = node.id
+                    }
+
+//                    appState.startPosition = node.getNodeCenter()
+//                    // логика начала создания линии
+//                    appState.startNode = node.id
+//                    appState.isCreateLine = true
                     println("захватили ноду")
                     // метод выключения меню (Popup)
                     onDismissRequest.invoke()

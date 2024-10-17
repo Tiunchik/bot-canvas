@@ -11,27 +11,26 @@ class ApplicationState {
     var nodes by mutableStateOf(mutableListOf<Node>())
     var links by mutableStateOf(mutableListOf<Link>())
 
-    var startNode by mutableStateOf(UUID.randomUUID())
-    var isCreateLine by mutableStateOf(false)
-    var startPosition by mutableStateOf(Offset(0f, 0f))
-
-//    var boxColor: MutableState<Color> by  mutableStateOf(Color.Black)
     var boxColor by mutableStateOf(Color.Black)
-    var drawingArrow by mutableStateOf<DrawingArrow?>(null)
+    var tempArrow by mutableStateOf(Arrow())
 
 
-    fun updateStartPosition(offset: Offset) {
-        println("Start position - ${offset}")
-        startPosition = offset
-    }
-
-    fun updateStartPosition(x: Int, y: Int) = updateStartPosition(Offset(x.toFloat(), y.toFloat()))
-
+    fun containsLink(startNodeId: UUID, endNodeId: UUID): Boolean =
+        links.find { it.startNode == startNodeId && it.endNode == endNodeId } != null
 }
 
 
-data class DrawingArrow(
-    var isDrawingArrow: Boolean,
-    var startPoint: Offset,
-    var endOffset: Offset
-)
+data class Arrow(
+    var isDraw: Boolean = false,
+
+    var startPoint: Offset? = null,
+    var endPoint: Offset? = null,
+
+    var startNodeId: UUID? = null,
+    var endNodeId: UUID? = null,
+) {
+    fun toLink(): Link = Link(
+        startNodeId ?: throw RuntimeException("что-то не так"),
+        endNodeId ?: throw RuntimeException("что-то не так")
+    )
+}

@@ -25,8 +25,8 @@ val mapSize = 6000.dp
 
 // Компонент для рисования на Canvas
 @Composable
-fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ApplicationState) {
-    var cursorPosition by remember { mutableStateOf(Offset.Zero) }
+fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState) {
+    var cursorPoint by remember { mutableStateOf(Offset.Zero) }
 
     // Состояние для хранения смещения карты
     var mapOffset by remember { mutableStateOf(Offset.Zero) }
@@ -61,18 +61,22 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ApplicationSt
                     //логика рисования линии между нодами после нажатие на создание линии в контексном меню
                     while (true) {
                         val event = awaitPointerEvent()
-                        cursorPosition = event.changes.first().position // Получаем позицию курсора
-                        // Если мы создаём линию-связь и нажимаем левой клавишей мыши - прекратить
-                        if (event.buttons.isPrimaryPressed && model.isCreateLine) {
-                            model.isCreateLine = false
+                        cursorPoint = event.changes.first().position // Получаем позицию курсора
+                        // Если мы создаём стрелку и нажимаем ЛКМ - прекратить
+//                        if (event.buttons.isPrimaryPressed && appState.isCreateLine) {
+//                            model.isCreateLine = false
+//                        }
+                        if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
+//                            model.isCreateLine = false
+                            appState.tempArrow.isDraw = false
                         }
                     }
                 }
             }
         ) {
-            val linesMap = model.nodes.associateBy { it.id }
+            val linesMap = appState.nodes.associateBy { it.id }
             //Отрисовываем связи
-            model.links.forEach {
+            appState.links.forEach {
                 val start = linesMap[it.startNode]
                 val end = linesMap[it.endNode]
                 if (start != null && end != null) {
@@ -81,17 +85,26 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ApplicationSt
             }
 
             //Отрисовываем узлы
-            model.nodes.forEach {
-                DraggableNode(model, it, color)
+            appState.nodes.forEach {
+                DraggableNode(appState, it, color)
             }
 
             //Протягивание линии от узла к узлу
-            if (model.isCreateLine) {
-                Line(model.startPosition, cursorPosition)
-            }
+//            if (appState.isCreateLine) {
+//                Line(appState.startPosition, cursorPosition)
+//            }
+            appState.drawTempArrow(cursorPoint)
         }
 
     }
 
 
+}
+
+@Composable
+private fun ApplicationState.drawTempArrow(cursorPos: Offset) {
+    if (tempArrow.isDraw) Arrow(
+        tempArrow.startPoint ?: throw RuntimeException("что-то не так..."),
+        cursorPos
+    )
 }
