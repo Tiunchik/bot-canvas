@@ -8,10 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,33 +17,23 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.zIndex
 import dto.Node
-import dto.ViewModel
+import dto.ApplicationState
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        App2()
-    }
-}
-
-@Composable
-fun App2() {
-    MaterialTheme {
-        MainScreen()
+        MaterialTheme {
+            MainScreen()
+        }
     }
 }
 
 @Composable
 fun MainScreen(
-    model: ViewModel = remember { ViewModel() }
+    appState: ApplicationState = remember { ApplicationState() }
 ) {
-    var boxColor: Color by remember { mutableStateOf(Color.Black) }
-
-
     Box(modifier = Modifier.fillMaxSize()) {
         // Верхнее меню
-        TopMenu(model) {
-            boxColor = it
-        }
+        TopMenu(appState)
 
         Divider(
             modifier = Modifier
@@ -65,8 +52,8 @@ fun MainScreen(
                 modifier = Modifier
                     .weight(0.80f) // 80% ширины экрана
                     .fillMaxHeight(),
-                boxColor,
-                model
+                appState.boxColor,
+                appState
             )
 
             // Правая часть - меню с прокруткой (20% ширины экрана, минимум 100px)
@@ -75,7 +62,7 @@ fun MainScreen(
                     .fillMaxHeight()
                     .widthIn(min = 300.dp) // Минимальная ширина 100 пикселей
                     .weight(0.20f),
-                onMenuItemClick = { model.nodes.value = model.nodes.value.plus(it).toMutableList() }
+                onMenuItemClick = { appState.nodes = appState.nodes.plus(it).toMutableList() }
             )
         }
     }
@@ -85,7 +72,8 @@ fun MainScreen(
 // Компонент для верхнего меню
 @Preview
 @Composable
-fun TopMenu(model: ViewModel, block: (Color) -> Unit) {
+//fun TopMenu(model: ViewModel, block: MutableState<Color>) {
+fun TopMenu(appState: ApplicationState) {
 
     Row(
         modifier = Modifier
@@ -97,26 +85,14 @@ fun TopMenu(model: ViewModel, block: (Color) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Кнопка 1
-        Button(onClick = { block.invoke(Color.Red) }) {
-            Text("Красный")
-        }
-
-        // Кнопка 2
-        Button(onClick = { block.invoke(Color.Black) }) {
-            Text("Чёрный")
-        }
-
-        // Кнопка 3
-        Button(onClick = { block.invoke(Color.Green) }) {
-            Text("Зелёный")
-        }
+        Button(onClick = { appState.boxColor = Color.Red }) { Text("Красный") }
+        Button(onClick = { appState.boxColor = Color.Black }) { Text("Чёрный") }
+        Button(onClick = { appState.boxColor = Color.Green }) { Text("Зелёный") }
 
         Button(onClick = {
-            model.nodes.value.forEach { println("node ${it.id} offset - ${it.offset.x}=${it.offset.y}") }
-            model.links.value.forEach { println("links - ${it.startNode}=${it.endNode}") }
-        }
-        ) {
+            appState.nodes.forEach { println("node ${it.id} offset - ${it.offset.x}=${it.offset.y}") }
+            appState.links.forEach { println("links - ${it.startNode}=${it.endNode}") }
+        }) {
             Text("Печать")
         }
     }

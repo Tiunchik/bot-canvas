@@ -1,9 +1,7 @@
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.PointerMatcher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -28,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dto.Link
 import dto.Node
-import dto.ViewModel
+import dto.ApplicationState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DraggableNode(model: ViewModel, node: Node, color: Color) {
+fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
     var offset by remember { mutableStateOf(node.offset) }
 
     // Переменная для управления отображением меню
@@ -50,8 +48,10 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
             detectDragGestures { change, dragAmount ->
                 change.consume()  // Указатель мыши "захватывается"
                 // Обновляем положение элемента
-                node.offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
-                offset = node.offset
+                Offset(offset.x + dragAmount.x, offset.y + dragAmount.y).let {
+                    node.offset = it
+                    offset = it
+                }
             }
         }
         .pointerInput(false) {
@@ -59,6 +59,7 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
                 while (true) {
                     val event = awaitPointerEvent()
                     val cursorOffset = event.changes.first().position
+                    // Нажатие ПКМ - открыть контекстное меню
                     if (event.type == PointerEventType.Press) {
                         if (event.buttons.isSecondaryPressed) {
                             menuOffset = IntOffset(cursorOffset.x.toInt(), cursorOffset.y.toInt())
@@ -67,15 +68,8 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
                             // Скрываем меню при любом другом клике
                             showMenu = false
                         }
-                        // логика создания связи между нодами, когда связь от первой ноды дотянули до второй и нажали левой клавишей на первой ноде
-                        if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
-                            if (model.startNode.value != node.id) {
-                                model.links.value = model.links.value
-                                    .plus(Link(model.startNode.value, node.id))
-                                    .toMutableList()
-                                model.isCreateLine.value = false
-                                println("создали связь")
-                            } else println("нельзя создать связь к самому себе")
+                        if (event.buttons.isPrimaryPressed && appState.isCreateLine) {
+                            appState.addArrowTo(node)
                         }
                     }
                 }
@@ -87,7 +81,21 @@ fun DraggableNode(model: ViewModel, node: Node, color: Color) {
     ) {
         Text(text = "Drag me")
         if (showMenu) {
-            ContextMenu(menuOffset, node, model) { showMenu = false }
+            ContextMenu(menuOffset, node, appState) { showMenu = false }
         }
     }
+}
+
+/**
+ * логика создания связи между нодами, когда связь от первой ноды дотянули до второй
+ * и нажали левой клавишей на первой ноде
+ */
+fun ApplicationState.addArrowTo(node: Node) {
+    if (this.startNode != node.id) {
+        this.links = this.links
+            .plus(Link(this.startNode, node.id))
+            .toMutableList()
+        this.isCreateLine = false
+        println("создали связь")
+    } else println("нельзя создать связь к самому себе")
 }

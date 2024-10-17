@@ -1,13 +1,10 @@
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,25 +15,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import dto.CurrentLink
-import dto.Node
-import dto.ViewModel
-import java.util.UUID
+import dto.ApplicationState
+
+val windowSize = 2000.dp
+val mapSize = 6000.dp
 
 // Компонент для рисования на Canvas
 @Composable
-fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ViewModel) {
+fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ApplicationState) {
     var cursorPosition by remember { mutableStateOf(Offset.Zero) }
-
-    val windowSize = 2000.dp
-    val mapSize = 6000.dp
 
     // Состояние для хранения смещения карты
     var mapOffset by remember { mutableStateOf(Offset.Zero) }
@@ -73,16 +63,16 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ViewModel) {
                         val event = awaitPointerEvent()
                         cursorPosition = event.changes.first().position // Получаем позицию курсора
                         // Если мы создаём линию-связь и нажимаем левой клавишей мыши - прекратить
-                        if (event.buttons.isPrimaryPressed && model.isCreateLine.value) {
-                            model.isCreateLine.value = false
+                        if (event.buttons.isPrimaryPressed && model.isCreateLine) {
+                            model.isCreateLine = false
                         }
                     }
                 }
             }
         ) {
-            val linesMap = model.nodes.value.associateBy { it.id }
+            val linesMap = model.nodes.associateBy { it.id }
             //Отрисовываем связи
-            model.links.value.forEach {
+            model.links.forEach {
                 val start = linesMap[it.startNode]
                 val end = linesMap[it.endNode]
                 if (start != null && end != null) {
@@ -91,13 +81,13 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, model: ViewModel) {
             }
 
             //Отрисовываем узлы
-            model.nodes.value.forEach {
+            model.nodes.forEach {
                 DraggableNode(model, it, color)
             }
 
             //Протягивание линии от узла к узлу
-            if (model.isCreateLine.value) {
-                Line(model.startPosition.value, cursorPosition)
+            if (model.isCreateLine) {
+                Line(model.startPosition, cursorPosition)
             }
         }
 

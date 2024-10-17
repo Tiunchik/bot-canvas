@@ -5,19 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33009763-ed76-4310-b330-39e320d03be9" name="Changes" comment="черновик">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Constant.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Line.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/NodeLine.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/GPT_1.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/ApplicationState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/ViewModel.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -28,12 +34,17 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Data Class" />
-        <option value="Kotlin Class" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -48,6 +59,9 @@
     &quot;accountId&quot;: &quot;71dcbaf8-514b-4893-be57-dc9cc27bf508&quot;
   }
 }</component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -62,12 +76,24 @@
     "Gradle.Build bot-canvas.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
     "Kotlin.AnotherMainKt.executor": "Debug",
-    "Kotlin.MainKt.executor": "Debug",
+    "Kotlin.GPT_1Kt.executor": "Run",
+    "Kotlin.GTP_2Kt.executor": "Run",
+    "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "DL__master",
+    "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Java/bot-canvas/src/main/kotlin"
+    "last_opened_file_path": "D:/Java/bot-canvas/src/main/kotlin",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -82,6 +108,20 @@
     </key>
   </component>
   <component name="RunManager" selected="Kotlin.MainKt">
+    <configuration name="GPT_1Kt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="GPT_1Kt" />
+      <module name="bot-canvas.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GTP_2Kt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="gpt.GTP_2Kt" />
+      <module name="bot-canvas.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MainKt" />
       <module name="bot-canvas.main" />
@@ -99,8 +139,18 @@
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Kotlin.GTP_2Kt" />
+        <item itemvalue="Kotlin.GPT_1Kt" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -130,9 +180,16 @@
     <option name="localTasksCounter" value="3" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
     <MESSAGE value="черновик" />
     <option name="LAST_COMMIT_MESSAGE" value="черновик" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>
