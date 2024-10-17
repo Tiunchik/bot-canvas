@@ -5,13 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33009763-ed76-4310-b330-39e320d03be9" name="Changes" comment="черновик">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Arrow.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/main/MainScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/main/RightMenu.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/main/TopMenu.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/view/ApplicationState.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Line.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Line.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/NodeLine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/NodeLine.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/ApplicationState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/ApplicationState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ContextMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/NodeContextMenu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/DragableNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/DragableNode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/GPT_1.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gpt/GPT_1.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/LeftCanvas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/LeftCanvas.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Line.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/Arrow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/NodeLine.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/ApplicationState.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/CurrentLink.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/Link.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Link.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dto/Node.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,8 +40,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Data Class" />
-        <option value="Kotlin File" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -58,6 +68,9 @@
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="true" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -67,34 +80,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build bot-canvas.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Kotlin.AnotherMainKt.executor": "Debug",
-    "Kotlin.GPT_1Kt.executor": "Run",
-    "Kotlin.GTP_2Kt.executor": "Run",
-    "Kotlin.MainKt.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "DL__master",
-    "go.import.settings.migrated": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Java/bot-canvas/src/main/kotlin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.17",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build bot-canvas.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.AnotherMainKt.executor&quot;: &quot;Debug&quot;,
+    &quot;Kotlin.GPT_1Kt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.GTP_2Kt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DL__master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Java/bot-canvas/src/main/kotlin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Java\bot-canvas\src\main\kotlin" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\_Danik\development\projects\Maksim\bot-canvas\src\main\kotlin\gpt" />
+      <recent name="C:\_Danik\development\projects\Maksim\bot-canvas\src\main\kotlin" />
+      <recent name="C:\_Danik\development\projects\Maksim\bot-canvas\src\main\kotlin\ui\main" />
+      <recent name="C:\_Danik\development\projects\Maksim\bot-canvas\src\main\kotlin\ui" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="view" />
     </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="dto" />
@@ -182,7 +204,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
     <MESSAGE value="черновик" />
-    <option name="LAST_COMMIT_MESSAGE" value="черновик" />
+    <MESSAGE value="запушил ветку DL_master&#10;&#10;- победил изврат с mutableState&lt;T&gt;.value = ...&#10;- вынес мелкие вещи во viewModel&#10;- сделал отрисовку именно стрелки, а не линии&#10;- вынес отрисовку стрелки в отдельную viewModel, сейчас код для этого менее путаный&#10;- rename ViewMode -&gt; ApplicationState&#10;- rename Line -&gt; Arrow&#10;- разбил файлы на директории&#10;- вынес составные части из Main.kt" />
+    <option name="LAST_COMMIT_MESSAGE" value="запушил ветку DL_master&#10;&#10;- победил изврат с mutableState&lt;T&gt;.value = ...&#10;- вынес мелкие вещи во viewModel&#10;- сделал отрисовку именно стрелки, а не линии&#10;- вынес отрисовку стрелки в отдельную viewModel, сейчас код для этого менее путаный&#10;- rename ViewMode -&gt; ApplicationState&#10;- rename Line -&gt; Arrow&#10;- разбил файлы на директории&#10;- вынес составные части из Main.kt" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

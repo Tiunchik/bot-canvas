@@ -12,10 +12,11 @@ data class Node(
     var height: Int = 40
 ) {
 
-    fun getNodeCenter(): Offset {
-        val x = offset.x + width/2
-        val y = offset.y + height/2
-        return Offset(x.toFloat(), y.toFloat())
-    }
+    val center: Offset
+        get() {
+            val x = offset.x + width / 2
+            val y = offset.y + height / 2
+            return Offset(x, y)
+        }
 
 }

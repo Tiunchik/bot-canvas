@@ -1,41 +1,30 @@
+package ui
+
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.isPrimaryPressed
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.zIndex
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-
-@Composable
-fun Line(startPoint: Offset, endPoint: Offset) {
-    Canvas(modifier = Modifier
-        .zIndex(NODE_LEVEL + 1f)) {
-        drawLine(color = Color.Black, startPoint, endPoint)
-    }
-}
-
 // TODO: имхо не очень хорошо плодить много Canvas для Каждой Линии...
 @Composable
-fun Arrow(startPoint: Offset,
-          endPoint: Offset,) {
-    Canvas(modifier = Modifier
-        .zIndex(NODE_LEVEL + 1f)) {
-        drawArrow(startPoint, endPoint, color = Color.Black, )
+fun Arrow(modifier: Modifier, startPoint: Offset, endPoint: Offset) {
+    Canvas(
+        modifier = modifier
+    ) {
+        drawArrow(Color.Black, startPoint, endPoint)
     }
 }
 
 // Функция для рисования стрелки
-fun androidx.compose.ui.graphics.drawscope.DrawScope.drawArrow(
+fun DrawScope.drawArrow(
+    color: Color = Color.Black,
     start: Offset,
     end: Offset,
-    color: Color = Color.Black,
     strokeWidth: Float = 2.5f
 ) {
     // Рисуем основную линию стрелки
@@ -50,7 +39,7 @@ fun androidx.compose.ui.graphics.drawscope.DrawScope.drawArrow(
     val arrowAngle = atan2(end.y - start.y, end.x - start.x)
 
     // Параметры для стрелки
-    val arrowHeadLength = 20f // Длина головки стрелки
+    val arrowHeadLength = 30f // Длина головки стрелки
     val arrowHeadAngle = Math.toRadians(30.0) // Угол между основной линией и головкой стрелки
 
     // Вычисляем координаты для двух сторон головки стрелки

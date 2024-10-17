@@ -1,4 +1,6 @@
-import androidx.compose.foundation.ExperimentalFoundationApi
+package ui
+
+import NODE_LEVEL
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -25,9 +27,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dto.Node
-import dto.ApplicationState
+import view.ApplicationState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
     var offset by remember { mutableStateOf(node.offset) }
@@ -64,12 +65,10 @@ fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
                             menuOffset = IntOffset(cursorOffset.x.toInt(), cursorOffset.y.toInt())
                             showMenu = true
                         } else {
-                            // Скрываем меню при любом другом клике
-                            showMenu = false
+                            showMenu = false // Скрываем меню при любом другом клике
                         }
-//                        if (event.buttons.isPrimaryPressed && appState.isCreateLine) {
                         if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
-                            appState.addArrowTo(node)
+                            appState.addLinkTo(node)
                         }
                     }
                 }
@@ -80,49 +79,6 @@ fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
 
     ) {
         Text(text = "Drag me")
-        if (showMenu) {
-            ContextMenu(menuOffset, node, appState) { showMenu = false }
-        }
+        if (showMenu) NodeContextMenu(menuOffset, node, appState) { showMenu = false }
     }
-}
-
-/**
- * логика создания связи между нодами, когда связь от первой ноды дотянули до второй
- * и нажали левой клавишей на первой ноде
- */
-//private fun ApplicationState.addArrowTo(node: Node) {
-//    if (this.startNode != node.id) {
-//        this.links = this.links
-//            .plus(Link(this.startNode, node.id))
-//            .toMutableList()
-//        this.isCreateLine = false
-//        println("создали связь")
-//    } else println("нельзя создать связь к самому себе")
-//}
-
-private fun ApplicationState.addArrowTo(node: Node) {
-    // Если мы пытаемся делать связь сами с собой -> выход
-    if (this.tempArrow.startNodeId == node.id) {
-        println("нельзя создать связь к самому себе!")
-        return
-    }
-    // Эти 2 ноды уже имеют такую связь -> выход
-    if (this.containsLink(
-            tempArrow.startNodeId ?: throw RuntimeException("что-то не так"),
-            node.id
-        )
-    ) {
-        println("нельзя создать связь которая уже существует!")
-        return
-    }
-
-    tempArrow.apply {
-        endNodeId = node.id
-        endPoint = node.getNodeCenter()
-        isDraw = false
-    }
-    links += tempArrow.toLink()
-
-    println("создали связь")
-
 }

@@ -1,3 +1,5 @@
+package ui
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,11 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import dto.ApplicationState
 import dto.Node
+import view.ApplicationState
 
 @Composable
-fun ContextMenu(offset: IntOffset, node: Node, appState: ApplicationState, onDismissRequest: () -> Unit) {
+fun NodeContextMenu(
+    offset: IntOffset,
+    node: Node,
+    appState: ApplicationState,
+    onDismissRequest: () -> Unit
+) {
     Popup(
         offset = offset,
         onDismissRequest = onDismissRequest
@@ -30,20 +37,12 @@ fun ContextMenu(offset: IntOffset, node: Node, appState: ApplicationState, onDis
         ) {
             Column {
                 MenuItem("Create onText link") {
-
                     appState.tempArrow.apply {
                         isDraw = true
-                        startPoint = node.getNodeCenter()
-                        startNodeId = node.id
+                        startNode = node
                     }
-
-//                    appState.startPosition = node.getNodeCenter()
-//                    // логика начала создания линии
-//                    appState.startNode = node.id
-//                    appState.isCreateLine = true
                     println("захватили ноду")
-                    // метод выключения меню (Popup)
-                    onDismissRequest.invoke()
+                    onDismissRequest.invoke() // метод выключения меню (Popup)
                 }
                 MenuItem("Action 2")
                 MenuItem("Action 3")
@@ -59,7 +58,7 @@ fun MenuItem(text: String, onClick: () -> Unit = {}) {
             .fillMaxWidth()
             .background(Color.LightGray)
             .padding(8.dp)
-            .clickable(enabled = true, onClick = onClick )
+            .clickable(onClick = onClick)
     ) {
         BasicText(text)
     }

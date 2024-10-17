@@ -1,3 +1,8 @@
+package ui
+
+import LINE_LEVEL
+import NODE_LEVEL
+import SURFACE_LEVEL
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -18,10 +23,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import dto.ApplicationState
+import view.ApplicationState
 
-val windowSize = 2000.dp
-val mapSize = 6000.dp
+private val windowSize = 2000.dp
+private val mapSize = 6000.dp
 
 // Компонент для рисования на Canvas
 @Composable
@@ -63,48 +68,38 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                         val event = awaitPointerEvent()
                         cursorPoint = event.changes.first().position // Получаем позицию курсора
                         // Если мы создаём стрелку и нажимаем ЛКМ - прекратить
-//                        if (event.buttons.isPrimaryPressed && appState.isCreateLine) {
-//                            model.isCreateLine = false
-//                        }
                         if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
-//                            model.isCreateLine = false
                             appState.tempArrow.isDraw = false
                         }
                     }
                 }
             }
         ) {
-            val linesMap = appState.nodes.associateBy { it.id }
-            //Отрисовываем связи
-            appState.links.forEach {
-                val start = linesMap[it.startNode]
-                val end = linesMap[it.endNode]
-                if (start != null && end != null) {
-                    NodeLine(start, end)
+            appState.apply {
+                links.forEach {
+                    Arrow(
+                        modifier = Modifier.zIndex(LINE_LEVEL),
+                        startPoint = it.startNode.center,
+                        endPoint = it.endNode.center
+                    )
                 }
-            }
 
-            //Отрисовываем узлы
-            appState.nodes.forEach {
-                DraggableNode(appState, it, color)
-            }
+                //Отрисовка узлов
+                nodes.forEach { DraggableNode(appState, it, color) }
 
-            //Протягивание линии от узла к узлу
-//            if (appState.isCreateLine) {
-//                Line(appState.startPosition, cursorPosition)
-//            }
-            appState.drawTempArrow(cursorPoint)
+                // Протягивание линии от узла к узлу
+                drawTempArrow(cursorPoint)
+            }
         }
-
     }
-
 
 }
 
 @Composable
-private fun ApplicationState.drawTempArrow(cursorPos: Offset) {
+private fun ApplicationState.drawTempArrow(cursorPoint: Offset) {
     if (tempArrow.isDraw) Arrow(
-        tempArrow.startPoint ?: throw RuntimeException("что-то не так..."),
-        cursorPos
+        modifier = Modifier.zIndex(NODE_LEVEL + 1f),
+        startPoint = tempArrow.startPoint,
+        endPoint = cursorPoint
     )
 }
