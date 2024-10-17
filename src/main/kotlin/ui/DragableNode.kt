@@ -30,7 +30,7 @@ import dto.Node
 import view.ApplicationState
 
 @Composable
-fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
+fun DraggableNode(modifier: Modifier, appState: ApplicationState, node: Node, color: Color) {
     var offset by remember { mutableStateOf(node.offset) }
 
     // Переменная для управления отображением меню
@@ -38,9 +38,8 @@ fun DraggableNode(appState: ApplicationState, node: Node, color: Color) {
     // Переменная для хранения позиции клика
     var menuOffset by remember { mutableStateOf(IntOffset.Zero) }
 
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
-        .zIndex(NODE_LEVEL)
         .width(node.width.dp)
         .height(node.height.dp)
         .pointerInput(true) {

@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.isPrimaryPressed
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import view.ApplicationState
+import kotlin.math.max
+import kotlin.math.min
 
 private val windowSize = 2000.dp
 private val mapSize = 6000.dp
@@ -31,17 +34,19 @@ private val mapSize = 6000.dp
 // Компонент для рисования на Canvas
 @Composable
 fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState) {
+    // Отслеживание положения курсора мыши в реалтайме ^_^
     var cursorPoint by remember { mutableStateOf(Offset.Zero) }
-
     // Состояние для хранения смещения карты
     var mapOffset by remember { mutableStateOf(Offset.Zero) }
+    // Состояние для масштаба
+    var scale by remember { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
 
     // Основное окно
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(0.8f)
-            .background(Color.Gray)
             // Жест перетаскивания карты
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
@@ -54,6 +59,23 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                         y = newOffset.y.coerceIn(-(mapSize.toPx() - windowSize.toPx()), 0f)
                     )
                 }
+            }
+            .pointerInput(3) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        //  управление скроллом
+                        event.changes.first().scrollDelta.y
+                            .let {
+                                if (it != 0f) {
+                                    val zoomFactor = if (it > 0) 0.9f else 1.1f
+                                    scale = max(0.5f, min(3f, scale * zoomFactor)) // Ограничиваем масштаб от 0.5x до 3x
+                                }
+                            }
+                    }
+
+                }
+
             }
     ) {
         // Большая карта
@@ -75,17 +97,30 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                 }
             }
         ) {
+            DrawGrid(60, 6000f, 6000f)
+
             appState.apply {
                 links.forEach {
                     Arrow(
-                        modifier = Modifier.zIndex(LINE_LEVEL),
+                        modifier = Modifier
+                            .zIndex(LINE_LEVEL)
+                            .scale(scale),
                         startPoint = it.startNode.center,
                         endPoint = it.endNode.center
                     )
                 }
 
                 //Отрисовка узлов
-                nodes.forEach { DraggableNode(appState, it, color) }
+                nodes.forEach {
+                    DraggableNode(
+                        modifier = Modifier
+                            .zIndex(NODE_LEVEL)
+                            .scale(scale),
+                        appState = appState,
+                        node = it,
+                        color = color
+                    )
+                }
 
                 // Протягивание линии от узла к узлу
                 drawTempArrow(cursorPoint)
