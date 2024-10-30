@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.isSecondaryPressed
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dto.Node
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import view.ApplicationState
 
 @Composable
@@ -58,14 +62,18 @@ fun DraggableNode(modifier: Modifier, appState: ApplicationState, node: Node, co
                 while (true) {
                     val event = awaitPointerEvent()
                     val cursorOffset = event.changes.first().position
-                    // Нажатие ПКМ - открыть контекстное меню
+
                     if (event.type == PointerEventType.Press) {
+
+                        // Нажатие ПКМ - открыть контекстное меню
                         if (event.buttons.isSecondaryPressed) {
                             menuOffset = IntOffset(cursorOffset.x.toInt(), cursorOffset.y.toInt())
                             showMenu = true
                         } else {
                             showMenu = false // Скрываем меню при любом другом клике
                         }
+
+                        // Нажатие ЛКМ - Опустить рисуемую стрелку на Это блок (сделать связь между блоками)
                         if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
                             appState.addLinkTo(node)
                         }
@@ -73,6 +81,7 @@ fun DraggableNode(modifier: Modifier, appState: ApplicationState, node: Node, co
                 }
             }
         }
+
         .border(width = Dp.Hairline, color = color, shape = RectangleShape)
         .background(Color.White)
 

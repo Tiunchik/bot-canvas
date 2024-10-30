@@ -3,7 +3,6 @@ package ui
 import LINE_LEVEL
 import NODE_LEVEL
 import SURFACE_LEVEL
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,6 +23,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import board.BoardUIState
+import board.BoardView
 import view.ApplicationState
 import kotlin.math.max
 import kotlin.math.min
@@ -33,7 +34,9 @@ private val mapSize = 6000.dp
 
 // Компонент для рисования на Canvas
 @Composable
-fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState) {
+fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState, view: BoardView) {
+//    var view = remember { BoardView(BoardUIState(appState.nodes)) }
+
     // Отслеживание положения курсора мыши в реалтайме ^_^
     var cursorPoint by remember { mutableStateOf(Offset.Zero) }
     // Состояние для хранения смещения карты
@@ -96,6 +99,7 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                     }
                 }
             }
+
         ) {
             DrawGrid(60, 6000f, 6000f)
 
@@ -111,7 +115,25 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                 }
 
                 //Отрисовка узлов
-                nodes.forEach {
+                // appState.tempArrow.isDraw
+                //  appState.addLinkTo(node)
+                // if (showMenu) NodeContextMenu(menuOffset, node, appState) { showMenu = false }
+                // - NodeContextMenu -  appState.tempArrow.apply {
+                //                        isDraw = true
+                //                        startNode = node
+                //                    }
+
+//                nodes.forEach {
+//                    DraggableNode(
+//                        modifier = Modifier
+//                            .zIndex(NODE_LEVEL)
+//                            .scale(scale),
+//                        appState = appState,
+//                        node = it,
+//                        color = color
+//                    )
+//                }
+                view.getAllNodes().forEach {
                     DraggableNode(
                         modifier = Modifier
                             .zIndex(NODE_LEVEL)

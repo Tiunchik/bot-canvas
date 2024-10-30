@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("plugin.serialization") version "1.9.0"  // Example Kotlin version
 }
 
 group = "org.cheapbot"
@@ -22,6 +23,7 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
 
 compose.desktop {
@@ -33,6 +35,12 @@ compose.desktop {
             packageName = "bot-canvas"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 

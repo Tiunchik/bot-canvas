@@ -1,0 +1,42 @@
+package common.json
+
+import androidx.compose.ui.geometry.Offset
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.decodeStructure
+
+object OffsetSerializer : KSerializer<Offset> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Offset") {
+        element("x", PrimitiveSerialDescriptor("x", PrimitiveKind.FLOAT))
+        element("y", PrimitiveSerialDescriptor("y", PrimitiveKind.FLOAT))
+    }
+
+    override fun serialize(encoder: Encoder, value: Offset) {
+        encoder.beginStructure(descriptor).apply {
+            encodeFloatElement(descriptor, 0, value.x)
+            encodeFloatElement(descriptor, 1, value.y)
+            endStructure(descriptor)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): Offset {
+        return decoder.decodeStructure(descriptor) {
+            var x = 0f
+            var y = 0f
+            while (true) {
+                when (val index = decodeElementIndex(descriptor)) {
+                    0 -> x = decodeFloatElement(descriptor, 0)
+                    1 -> y = decodeFloatElement(descriptor, 1)
+                    CompositeDecoder.DECODE_DONE -> break
+                    else -> throw SerializationException("Unknown index: $index")
+                }
+            }
+            Offset(x, y)
+        }
+    }
+}
