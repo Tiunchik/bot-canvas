@@ -3,7 +3,6 @@ package dto
 import androidx.compose.ui.geometry.Offset
 import java.util.UUID
 
-// TODO: возможно это view, а не dto ...
 data class Arrow(
     var isDraw: Boolean = false,
 

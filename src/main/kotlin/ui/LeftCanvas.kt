@@ -35,7 +35,6 @@ private val mapSize = 6000.dp
 // Компонент для рисования на Canvas
 @Composable
 fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState, view: BoardView) {
-//    var view = remember { BoardView(BoardUIState(appState.nodes)) }
 
     // Отслеживание положения курсора мыши в реалтайме ^_^
     var cursorPoint by remember { mutableStateOf(Offset.Zero) }

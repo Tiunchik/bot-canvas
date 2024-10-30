@@ -16,11 +16,6 @@ data class Node(
     var height: Int = 40
 ) {
 
-    val center: Offset
-        get() {
-            val x = offset.x + width / 2
-            val y = offset.y + height / 2
-            return Offset(x, y)
-        }
+    val center: Offset get() = Offset(x = offset.x + width / 2, y = offset.y + height / 2)
 
 }

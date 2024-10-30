@@ -48,13 +48,6 @@ fun TopMenu(appState: ApplicationState, boardView: BoardView) {
             appState.links.forEach { println("links - ${it.startNode.id}=${it.endNode.id}") }
 
             boardView.getAllNodes().also { print("""[${it.size}]""") }.forEach {  println("board noes = ${it.id} ${it.offset}") }
-//            Ctx.launch { boardView.uiSate.collect{
-//                println("print 1")
-//                boardView.mutableState.value.graph.nodes.forEach { println("board noes = ${it.id} ${it.offset}") }
-//                println("print 2")
-//
-//            } }
-//            boardView.uiSate.collectAsState()
         }) {
             Text("Печать")
         }

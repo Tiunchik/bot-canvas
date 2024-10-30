@@ -2,12 +2,14 @@ package common.json
 
 import androidx.compose.ui.geometry.Offset
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.decodeStructure
 
 object OffsetSerializer : KSerializer<Offset> {
