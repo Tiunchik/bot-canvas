@@ -1,27 +1,11 @@
 package ui
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
-
-// TODO: имхо не очень хорошо плодить много Canvas для Каждой Линии...
-
-fun DrawScope.ArrowCanvas(startPoint: Offset, endPoint: Offset) = drawArrow(Color.Black, startPoint, endPoint)
-
-@Composable
-fun Arrow(modifier: Modifier, startPoint: Offset, endPoint: Offset) {
-    Canvas(
-        modifier = modifier
-    ) {
-        drawArrow(Color.Black, startPoint, endPoint)
-    }
-}
 
 // Функция для рисования стрелки
 fun DrawScope.drawArrow(

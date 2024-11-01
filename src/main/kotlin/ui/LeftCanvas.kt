@@ -11,32 +11,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import board.BoardView
-import view.ApplicationState
 import kotlin.math.max
 import kotlin.math.min
 
 private val windowSize = 2000.dp
 private val mapSize = 6000.dp
 
-// Компонент для рисования на Canvas
-@Composable
-fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: ApplicationState, view: BoardView) {
-
-    // todo это всё вынести в BoardUiState
+@Composable fun LeftCanvas(modifier: Modifier = Modifier, view: BoardView) {
     // Отслеживание положения курсора мыши в реалтайме ^_^
     var cursorPoint by remember { mutableStateOf(Offset.Zero) }
     // Состояние для хранения смещения карты
     var mapOffset by remember { mutableStateOf(Offset.Zero) }
     // Состояние для масштаба
     var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
 
     // Основное окно
     Box(
@@ -86,8 +79,8 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
                         val event = awaitPointerEvent()
                         cursorPoint = event.changes.first().position // Получаем позицию курсора
                         // Если мы создаём стрелку и нажимаем ЛКМ - прекратить
-                        if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
-                            appState.tempArrow.isDraw = false
+                        if (event.buttons.isPrimaryPressed && view.tempArrow.isDraw) {
+                            view.stopDrawingTempArrow()
                         }
                     }
                 }
@@ -96,22 +89,9 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
         ) {
             DrawGrid(60, 6000f, 6000f)
 
-            appState.apply {
-                drawArrows(modifier.scale(scale))
-
-                //Отрисовка узлов
-                // appState.tempArrow.isDraw
-                //  appState.addLinkTo(node)
-                // if (showMenu) NodeContextMenu(menuOffset, node, appState) { showMenu = false }
-                // - NodeContextMenu -  appState.tempArrow.apply {
-                //                        isDraw = true
-                //                        startNode = node
-                //                    }
-
-                view.drawNodes(Modifier.scale(scale), appState, color)
-
-
-                // Протягивание линии от узла к узлу
+            view.apply {
+                drawLinks(Modifier.scale(scale))
+                drawNodes(Modifier.scale(scale))
                 drawTempArrow(Modifier.scale(scale), cursorPoint)
             }
         }
@@ -119,22 +99,17 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
 
 }
 
-@Composable private fun ApplicationState.drawArrows(modifier: Modifier) =
+@Composable private fun BoardView.drawLinks(modifier: Modifier) =
     Canvas(modifier = modifier.zIndex(LINE_LEVEL)) {
-        links.forEach { drawArrow(start = it.startNode.center, end = it.endNode.center) }
+        allLinks.forEach { drawArrow(start = it.startNode.center, end = it.endNode.center) }
     }
 
-@Composable private fun BoardView.drawNodes(modifier: Modifier, appState: ApplicationState, color: Color) =
+@Composable private fun BoardView.drawNodes(modifier: Modifier) =
     this.allNodes.forEach {
-        DraggableNode(
-            modifier = modifier.zIndex(NODE_LEVEL),
-            appState = appState,
-            node = it,
-            color = color
-        )
+        DraggableNode(modifier = modifier.zIndex(NODE_LEVEL), view = this, node = it)
     }
 
-@Composable private fun ApplicationState.drawTempArrow(modifier: Modifier, cursorPoint: Offset) {
+@Composable private fun BoardView.drawTempArrow(modifier: Modifier, cursorPoint: Offset) {
     if (tempArrow.isDraw)
         Canvas(modifier = modifier.zIndex(TEMP_ARROW_LEVEL)) {
             drawArrow(start = tempArrow.startPoint, end = cursorPoint)

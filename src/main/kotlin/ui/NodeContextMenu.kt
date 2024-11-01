@@ -2,11 +2,7 @@ package ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -17,14 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import dto.Node
-import view.ApplicationState
+import board.BoardView
+import board.dto.Node
 
 @Composable
 fun NodeContextMenu(
     offset: IntOffset,
     node: Node,
-    appState: ApplicationState,
+    view: BoardView,
     onDismissRequest: () -> Unit
 ) {
     Popup(
@@ -37,10 +33,7 @@ fun NodeContextMenu(
         ) {
             Column {
                 MenuItem("Create onText link") {
-                    appState.tempArrow.apply {
-                        isDraw = true
-                        startNode = node
-                    }
+                    view.startDrawingTempArrow(node)
                     println("захватили ноду")
                     onDismissRequest.invoke() // метод выключения меню (Popup)
                 }

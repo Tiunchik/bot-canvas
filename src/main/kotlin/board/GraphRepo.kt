@@ -1,11 +1,11 @@
 package board
 
-import dto.Node
-import java.util.UUID
+import board.dto.Node
+import java.util.*
 
-class GraphRepo (
+class GraphRepo(
     val dataSource: GraphTempFileDataSource
-){
+) {
     fun addNode(graphUUID: UUID, node: Node) {
 
     }

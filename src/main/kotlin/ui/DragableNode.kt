@@ -20,11 +20,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import dto.Node
-import view.ApplicationState
+import board.BoardView
+import board.dto.Node
 
 @Composable
-fun DraggableNode(modifier: Modifier, appState: ApplicationState, node: Node, color: Color) {
+fun DraggableNode(modifier: Modifier, view: BoardView, node: Node) {
     var offset by remember { mutableStateOf(node.offset) }
 
     // Переменная для управления отображением меню
@@ -64,19 +64,19 @@ fun DraggableNode(modifier: Modifier, appState: ApplicationState, node: Node, co
                         }
 
                         // Нажатие ЛКМ - Опустить рисуемую стрелку на Это блок (сделать связь между блоками)
-                        if (event.buttons.isPrimaryPressed && appState.tempArrow.isDraw) {
-                            appState.addLinkTo(node)
+                        if (event.buttons.isPrimaryPressed && view.tempArrow.isDraw) {
+                            view.addLink(view.tempArrow.startNode!!, node)
                         }
                     }
                 }
             }
         }
 
-        .border(width = Dp.Hairline, color = color, shape = RectangleShape)
+        .border(width = Dp.Hairline, color = view.defaultBoxColor, shape = RectangleShape)
         .background(Color.White)
 
     ) {
         Text(text = "Drag me")
-        if (showMenu) NodeContextMenu(menuOffset, node, appState) { showMenu = false }
+        if (showMenu) NodeContextMenu(menuOffset, node, view) { showMenu = false }
     }
 }

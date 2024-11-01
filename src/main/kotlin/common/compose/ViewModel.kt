@@ -1,9 +1,8 @@
-package common
+package common.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import common.compose.ViewModel
 import kotlinx.coroutines.*
 
 /**

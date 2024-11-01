@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import dto.Node
+import board.BoardView
+import board.dto.Node
 
 
 // Компонент для правого меню с прокруткой
 @Composable
-fun RightMenu(modifier: Modifier = Modifier, onMenuItemClick: (Node) -> Unit) {
+fun RightMenu(modifier: Modifier = Modifier, view: BoardView) {
     val scrollState = rememberScrollState()
 
     Column(
@@ -30,7 +31,7 @@ fun RightMenu(modifier: Modifier = Modifier, onMenuItemClick: (Node) -> Unit) {
     ) {
         // Пример элементов меню
         repeat(5) {
-            Button(onClick = { onMenuItemClick.invoke(Node()) }) {
+            Button(onClick = { view.addNode(Node()) }) {
                 Text("Добавить узел")
             }
         }

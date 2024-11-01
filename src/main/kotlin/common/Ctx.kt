@@ -16,7 +16,7 @@ object Ctx {
      * CoroutineScope который живёт пока приложение не закроется.
      * При закрытии приложение, вызываться метод close(), отменяющий все незавершённые Coroutine
      */
-    lateinit var coroutineScope : AppCoroutineScope
+    lateinit var coroutineScope: AppCoroutineScope
     lateinit var json: Json
     lateinit var settings: Settings
 

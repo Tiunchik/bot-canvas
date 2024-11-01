@@ -1,15 +1,29 @@
 package board
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import board.dto.Graph
+import board.dto.Link
+import board.dto.Node
 import common.Ctx
-import common.ViewModel
-import dto.Node
+import common.compose.ViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
 data class BoardUIState(
-    val graph: Graph
+    val graph: Graph,
 )
+
+data class ArrowUiState(
+    var isDraw: Boolean = false,
+    var startNode: Node? = null,
+) {
+    val startPoint: Offset get() = startNode?.center ?: throw RuntimeException("что-то не так")
+}
 
 /**
  * business API & ui state для Compose UI - для нашего типа холста где рисуем все детали Графа.
@@ -30,6 +44,13 @@ class BoardView(
     )
     val uiState = mutableUiState.stateIn(coroutineScope, SharingStarted.Eagerly, mutableUiState.value)
     val allNodes: List<Node> get() = this.uiState.value.graph.nodes
+    val allLinks: List<Link> get() = this.uiState.value.graph.links
+    var tempArrow by mutableStateOf(ArrowUiState(false, null))
+    var defaultBoxColor by mutableStateOf(Color.Black)
+
+
+    fun startDrawingTempArrow(startNode: Node) = run { tempArrow = ArrowUiState(isDraw = true, startNode = startNode) }
+    fun stopDrawingTempArrow() = run { tempArrow = ArrowUiState(isDraw = false, startNode = null) }
 
 
     /** Подписка UiState на изменение в DataSource state
@@ -51,6 +72,9 @@ class BoardView(
         }
     }
 
+    // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
     fun addNode(node: Node) = coroutineScope.launch { graphDataSource.addNode(selectedGraphUUID, node) }
 
+    // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
+    fun addLink(src: Node, trg: Node) = coroutineScope.launch { graphDataSource.addLink(selectedGraphUUID, src, trg) }
 }
