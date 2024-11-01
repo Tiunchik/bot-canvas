@@ -64,7 +64,7 @@ fun Ctx.init() {
         }
     }
     graphDataSource = GraphTempFileDataSource(json, settings.bootstrap.appTempDirPath)
-        .also { it.loadFromFile()  }
+
 
 }
 

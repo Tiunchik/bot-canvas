@@ -8,12 +8,13 @@ import ui.main.MainScreen
 
 fun main() = application {
     Window(onCloseRequest = {
-        runBlocking { Ctx.graphDataSource.saveToFile() } // Сохранить нынешний граф
+        runBlocking { Ctx.graphDataSource.saveStateToFile() } // Сохранить нынешний граф
         Ctx.coroutineScope.close() // отмена всех Короутин уровня приложение
         exitApplication() // выход из программы
     }) {
         MaterialTheme {
             Ctx.init()
+            Ctx.graphDataSource.loadStateFromFile()
 
             MainScreen()
         }

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import board.BoardView
-import board.hardcodeSelectedGraph
+import board.hardcodeSelectedGraphUUID
 import common.rememberViewModel
 import ui.LeftCanvas
 import view.ApplicationState
@@ -17,7 +17,7 @@ import view.ApplicationState
 @Composable
 fun MainScreen(
     appState: ApplicationState = remember { ApplicationState() },
-    boardView: BoardView = rememberViewModel { BoardView(hardcodeSelectedGraph) }
+    boardView: BoardView = rememberViewModel { BoardView(hardcodeSelectedGraphUUID) }
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Верхнее меню
@@ -52,7 +52,6 @@ fun MainScreen(
                     .widthIn(min = 300.dp) // Минимальная ширина 100 пикселей
                     .weight(0.20f),
                 onMenuItemClick = {
-                    appState.nodes = appState.nodes.plus(it).toMutableList()
                     boardView.addNode(it)
                 }
             )

@@ -125,7 +125,7 @@ fun LeftCanvas(modifier: Modifier = Modifier, color: Color, appState: Applicatio
     }
 
 @Composable private fun BoardView.drawNodes(modifier: Modifier, appState: ApplicationState, color: Color) =
-    this.getAllNodes().forEach {
+    this.allNodes.forEach {
         DraggableNode(
             modifier = modifier.zIndex(NODE_LEVEL),
             appState = appState,

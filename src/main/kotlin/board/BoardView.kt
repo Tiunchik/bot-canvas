@@ -3,10 +3,7 @@ package board
 import common.Ctx
 import common.ViewModel
 import dto.Node
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -25,37 +22,35 @@ data class BoardUIState(
  */
 class BoardView(
     val selectedGraphUUID: UUID,
-    val graphDataSource: GraphTempFileDataSource = Ctx.graphDataSource
+    private val graphDataSource: GraphTempFileDataSource = Ctx.graphDataSource
 ) : ViewModel() {
 
-    val mutableState = MutableStateFlow(
+    private val mutableUiState = MutableStateFlow(
         BoardUIState(graph = graphDataSource.getOrThrow(selectedGraphUUID))
     )
-//    val uiSate = mutableState
-//        .stateIn(
-//            Ctx.coroutineScope,
-//            SharingStarted.Eagerly,
-//            BoardUIState(graph = graphDataSource.getOrThrow(selectedGraphUUID))
-//        )
+    val uiState = mutableUiState.stateIn(coroutineScope, SharingStarted.Eagerly, mutableUiState.value)
+    val allNodes: List<Node> get() = this.uiState.value.graph.nodes
 
+
+    /** Подписка UiState на изменение в DataSource state
+     * Когда данные в DataSource обновляются, проверяем если ли наш [Graph] с таким [selectedGraphUUID],
+     * если да то, прокидываем обновление в наш поток
+     * */
     init {
-        /* подписка UiState на изменение в DataSource state */
-        viewModelScope.launch {
+        coroutineScope.launch {
             graphDataSource.allGraphs
                 .stateIn(
-                    viewModelScope,
-                    SharingStarted.Eagerly,
-                    mutableMapOf()
-                ).collect { graphs ->
+                    scope = coroutineScope,
+                    started = SharingStarted.Eagerly,
+                    initialValue = mutableMapOf()
+                )
+                .collect { graphs ->
                     (graphs[selectedGraphUUID] ?: return@collect)
-                        .let { updGraph -> mutableState.update { it.copy(graph = updGraph) } }
+                        .let { updGraph -> mutableUiState.update { it.copy(graph = updGraph) } }
                 }
         }
     }
 
-    fun addNode(node: Node) = viewModelScope.launch { graphDataSource.addNode(selectedGraphUUID, node) }
-
-    // TODO : MVVM get MutableState<List<Node>>
-    fun getAllNodes(): List<Node> = mutableState.value.graph.nodes
+    fun addNode(node: Node) = coroutineScope.launch { graphDataSource.addNode(selectedGraphUUID, node) }
 
 }

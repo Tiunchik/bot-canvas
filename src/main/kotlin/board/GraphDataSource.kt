@@ -1,22 +1,20 @@
 package board
 
 import common.Ctx
-import common.launchIO
+import common.compose.launchIO
 import dto.Node
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
-import java.util.UUID
+import java.util.*
 
-val hardcodeSelectedGraph = UUID.fromString("777e5184-84e0-452a-9733-22c865b57fb3")
+val hardcodeSelectedGraphUUID = UUID.fromString("777e5184-84e0-452a-9733-22c865b57fb3")
 
 class GraphTempFileDataSource(
-    val json: Json = Ctx.json,
-    val appTempDirPath: Path // обычно = C:\Users\user\AppData\Local\Temp\bot-canvas
+    private val json: Json = Ctx.json,
+    private val appTempDirPath: Path // обычно = C:\Users\user\AppData\Local\Temp\bot-canvas
 ) {
 
     private val graphsFile by lazy {
@@ -24,7 +22,7 @@ class GraphTempFileDataSource(
             .also { if (!it.exists()) it.createNewFile() }
     }
 
-    fun loadFromFile() = launchIO("load file graph.json") {
+    fun loadStateFromFile() = launchIO("load file graph.json") {
         graphsFile.readText().let {
             if (it.isBlank()) return@launchIO
             else json.decodeFromString<MutableMap<UUID, Graph>>(it)
@@ -32,17 +30,21 @@ class GraphTempFileDataSource(
         }
     }
 
-    fun saveToFile() = launchIO("save file graph.json") {
+    fun saveStateToFile() = launchIO("save file graph.json") {
         json.encodeToString(allGraphsStore.value).let { graphsFile.writeText(it) }
     }
 
 
     private val allGraphsStore = MutableStateFlow<MutableMap<UUID, Graph>>(mutableMapOf())
-    val allGraphs: Flow<MutableMap<UUID, Graph>> = allGraphsStore
+    val allGraphs = allGraphsStore.asStateFlow()
 
     init {
         // в случаем когда файла ещё нет, ты хардкодим что у нас есть Изначальный граф
-        allGraphsStore.update { mutableMapOf(hardcodeSelectedGraph to Graph(hardcodeSelectedGraph)) }
+        if (allGraphsStore.value.isEmpty()) allGraphsStore.update {
+            mutableMapOf(
+                hardcodeSelectedGraphUUID to Graph(hardcodeSelectedGraphUUID)
+            )
+        }
     }
 
 
