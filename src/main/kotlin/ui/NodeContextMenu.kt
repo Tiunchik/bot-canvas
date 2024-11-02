@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import board.BoardView
+import board.dto.Link
 import board.dto.Node
 
 @Composable
@@ -32,24 +33,32 @@ fun NodeContextMenu(
             shape = MaterialTheme.shapes.medium
         ) {
             Column {
-                MenuItem("Create onText link") {
+                MenuItem(modifier = Modifier.background(Color.Green), text = "Create onText link") {
                     view.startDrawingTempArrow(node)
-                    println("захватили ноду")
-                    onDismissRequest.invoke() // метод выключения меню (Popup)
+                    onDismissRequest.invoke()
                 }
-                MenuItem("Action 2")
-                MenuItem("Action 3")
+                MenuItem(modifier = Modifier.background(Color.Red), text = "Delete Node") {
+                    view.deleteNode(node)
+                    onDismissRequest.invoke()
+                }
+                MenuItem(modifier = Modifier.background(Color.Red), text = "Delete all links IN") {
+                    view.deleteAllLinks(node, Link.Direction.IN)
+                    onDismissRequest.invoke()
+                }
+                MenuItem(modifier = Modifier.background(Color.Red), text = "Delete all links OUT") {
+                    view.deleteAllLinks(node, Link.Direction.OUT)
+                    onDismissRequest.invoke()
+                }
             }
         }
     }
 }
 
 @Composable
-fun MenuItem(text: String, onClick: () -> Unit = {}) {
+fun MenuItem(modifier: Modifier = Modifier, text: String, onClick: () -> Unit = {}) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .background(Color.LightGray)
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {

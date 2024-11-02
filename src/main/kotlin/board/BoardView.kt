@@ -58,17 +58,8 @@ class BoardView(
      * если да то, прокидываем обновление в наш поток
      * */
     init {
-        coroutineScope.launch {
-            graphDataSource.allGraphs
-                .stateIn(
-                    scope = coroutineScope,
-                    started = SharingStarted.Eagerly,
-                    initialValue = mutableMapOf()
-                )
-                .collect { graphs ->
-                    (graphs[selectedGraphUUID] ?: return@collect)
-                        .let { updGraph -> mutableUiState.update { it.copy(graph = updGraph) } }
-                }
+        graphDataSource.subscribeToGraphChange(coroutineScope, selectedGraphUUID) {
+            mutableUiState.update { it.copy(graph = this) }
         }
     }
 
@@ -77,4 +68,10 @@ class BoardView(
 
     // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
     fun addLink(src: Node, trg: Node) = coroutineScope.launch { graphDataSource.addLink(selectedGraphUUID, src, trg) }
+
+    // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
+    fun deleteAllLinks(node: Node,  direction : Link.Direction)  = coroutineScope.launch { graphDataSource.deleteAllLinks(selectedGraphUUID, node,  direction)}
+
+    // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
+    fun deleteNode(node: Node) = coroutineScope.launch { graphDataSource.deleteNode(selectedGraphUUID, node) }
 }

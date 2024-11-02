@@ -5,9 +5,9 @@ import board.dto.Link
 import board.dto.Node
 import common.Ctx
 import common.compose.launchIO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -42,7 +42,7 @@ class GraphTempFileDataSource(
             if (fileText.isBlank()) return@launchIO
             else json.decodeFromString<MutableMap<UUID, Graph>>(fileText)
                 .also { graphs ->
-                    println("load from file = ${graphs.values.joinToString()}")
+//                    println("load from file = ${graphs.values.joinToString()}")
                     graphs
                         .map { (_, graph) -> createObjectReferencesForLinks(graph) }
                         .forEach { graphs[it.uuid] = it }
@@ -52,49 +52,83 @@ class GraphTempFileDataSource(
     }
 
     suspend fun saveStateToFile() = launchIO("save file graph.json") {
-        println("load from file = ${allGraphs.value.values.joinToString()}")
+//        println("load from file = ${allGraphs.value.values.joinToString()}")
         json.encodeToString(allGraphs.value).let { graphsFile.writeText(it) }
     }.join()
 
     // TODO move to Repo Layer
 
-    operator fun get(uuid: UUID): Result<Graph> = allGraphsStore.value[uuid].let {
-        if (it == null) Result.failure(RuntimeException("нет такого графа! graph.uuid=$uuid"))
-        else Result.success(it)
-    }
+    operator fun get(uuid: UUID): Result<Graph> = allGraphsStore.value[uuid]
+        ?.let { Result.success(it) } ?: failResult { "Не существует графа с таким uuid! graph.uuid=$uuid" }
 
     fun getOrThrow(graphUUID: UUID): Graph = this[graphUUID].fold(
         onFailure = { throw it.also { it.printStackTrace() } },
         onSuccess = { it })
 
-    // TODO move to Domain Layer
+    /**
+     * Если граф с таким UUID есть, то ждём его изменённую копию и пушим в поток
+     */
+    inline fun getGraphForUpdate(graphUUID: UUID, graphCopyProvider: Graph.() -> Graph): Result<Unit> =
+        this[graphUUID].fold(
+            onFailure = { exception -> Result.failure(exception) },
+            onSuccess = { graph -> pushUpdateGraph(graphCopyProvider(graph)); Result.success(Unit) })
 
-    fun addNode(graphUUID: UUID, node: Node) {
-        getOrThrow(graphUUID).let { selectedGraph ->
-            val newVersion = allGraphsStore.value +
-                    (graphUUID to selectedGraph.copy(nodes = selectedGraph.nodes + node))
-            allGraphsStore.update { newVersion.toMutableMap() }
+    /**
+     * Если граф с таким UUID есть, то передаём его для бизнес логики, что может вернуть другой тип данных или exception
+     * В таком случаи, нужно самим вызывать [pushUpdateGraph] при валидных изменениях [Graph]
+     */
+    inline fun <T> getGraphForResult(graphUUID: UUID, resultMapper: Graph.() -> Result<T>) = this[graphUUID].fold(
+        onFailure = { exception -> Result.failure(exception) },
+        onSuccess = { graph -> resultMapper(graph) })
+
+    fun subscribeToGraphChange(coroutineScope: CoroutineScope, graphUUID: UUID, onChange: Graph.() -> Unit) {
+        coroutineScope.launch {
+            allGraphs.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
+                .collect { graphs -> onChange((graphs[graphUUID] ?: return@collect)) }
         }
     }
 
-    fun addLink(graphUUID: UUID, src: Node, trg: Node): Result<Link> = this[graphUUID].fold(
-        onFailure = { Result.failure(it) },
-        onSuccess = { graph ->
-            if (src.id == trg.id) failResult<Link> { "Невозможно создать связь к самому себе!" }
-            if (graph.containsLink(src.id, trg.id))
-                return failResult { "Невозможно создать связь которая уже существует!" }
 
-            Link(src, trg).let { link ->
-                updateGraph(graph.copy(links = graph.links + link))
-                Result.success(link)
+    // TODO move to Domain Layer
+
+    fun addNode(graphUUID: UUID, node: Node) = getGraphForUpdate(graphUUID) { copy(nodes = nodes + node) }
+
+    fun addLink(graphUUID: UUID, src: Node, trg: Node): Result<Link> = getGraphForResult(graphUUID) {
+        if (src.id == trg.id) return failResult { "Невозможно создать связь к самому себе!" }
+        if (containsLink(src.id, trg.id))
+            return failResult { "Невозможно создать связь которая уже существует!" }
+        Link(src, trg).let { link ->
+            pushUpdateGraph(copy(links = links + link))
+            return Result.success(link)
+        }
+    }
+
+
+    // TODO: Debug !!! Плавающий баг!
+    fun deleteAllLinks(graphUUID: UUID, node: Node, direction: Link.Direction) = getGraphForUpdate(graphUUID) {
+        copy(
+            links = links.filterNot {
+                when (direction) {
+                    Link.Direction.IN -> it.endNode.id == node.id
+                    Link.Direction.OUT -> it.startNode.id == node.id
+                }
             }
-        })
+        )
+    }
 
+
+    // TODO: Debug !!! Плавающий баг!
+    fun deleteNode(graphUUID: UUID, node: Node) = getGraphForUpdate(graphUUID) {
+        copy(
+            nodes = nodes.filter { it.id != node.id },
+            links = links.filter { it.startNode.id != node.id && it.endNode.id != node.id }
+//                links = graph.links.filterNot { it.startNode.id == node.id || it.endNode.id == node.id }
+        )
+    }
 
     /* PRIVATE API */
 
-
-    private fun updateGraph(newStateVersion: Graph) =
+    fun pushUpdateGraph(newStateVersion: Graph) =
         allGraphsStore.update { (allGraphsStore.value + (newStateVersion.uuid to newStateVersion)) }
 
     /**
@@ -113,8 +147,10 @@ class GraphTempFileDataSource(
             }
         )
     }
+
 }
 
+fun <T> fail(failMsgInit: () -> String) = BusinessException(failMsgInit().also { println(it) })
 fun <T> failResult(failMsgInit: () -> String) = Result.failure<T>(BusinessException(failMsgInit().also { println(it) }))
 
 class BusinessException(msg: String, cause: Throwable? = null) : RuntimeException(msg, cause)
