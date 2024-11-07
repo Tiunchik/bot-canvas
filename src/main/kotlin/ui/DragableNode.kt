@@ -22,61 +22,61 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import board.BoardView
 import board.dto.Node
+import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun DraggableNode(modifier: Modifier, view: BoardView, node: Node) {
-    var offset by remember { mutableStateOf(node.offset) }
-
     // Переменная для управления отображением меню
     var showMenu by remember { mutableStateOf(false) }
     // Переменная для хранения позиции клика
     var menuOffset by remember { mutableStateOf(IntOffset.Zero) }
 
     Box(modifier = modifier
-        .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
+        .offset { IntOffset(node.offset.x.toInt(), node.offset.y.toInt()) }
         .width(node.width.dp)
         .height(node.height.dp)
-        .pointerInput(true) {
-            // ПЕРЕТАСКИВАНИЕ НОДЫ
-            detectDragGestures { change, dragAmount ->
-                change.consume()  // Указатель мыши "захватывается"
-                // Обновляем положение элемента
-                Offset(offset.x + dragAmount.x, offset.y + dragAmount.y).let {
-                    node.offset = it
-                    offset = it
+        /* жесть перетаскивание узла */
+        .pointerInput(node) {
+            coroutineScope {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()  // Указатель мыши "захватывается"
+                    // Обновляем положение элемента
+                    node.offset = Offset(x = node.offset.x + dragAmount.x, y = node.offset.y + dragAmount.y)
                 }
             }
         }
-        .pointerInput(false) {
-            awaitPointerEventScope {
-                while (true) {
-                    val event = awaitPointerEvent()
-                    val cursorOffset = event.changes.first().position
+        /* жесть Открыть контекстное меню при нажатии ПКМ */
+        /* отслеживаем Падение tempArrow на это узел (создать связь, цель этот узел) */
+        .pointerInput(node) {
+            coroutineScope {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val cursorOffset = event.changes.first().position
 
-                    if (event.type == PointerEventType.Press) {
+                        if (event.type == PointerEventType.Press) {
 
-                        // Нажатие ПКМ - открыть контекстное меню
-                        if (event.buttons.isSecondaryPressed) {
-                            menuOffset = IntOffset(cursorOffset.x.toInt(), cursorOffset.y.toInt())
-                            showMenu = true
-                        } else {
-                            showMenu = false // Скрываем меню при любом другом клике
-                        }
+                            // Нажатие ПКМ - открыть контекстное меню
+                            if (event.buttons.isSecondaryPressed) {
+                                menuOffset = IntOffset(cursorOffset.x.toInt(), cursorOffset.y.toInt())
+                                showMenu = true
+                            } else {
+                                showMenu = false // Скрываем меню при любом другом клике
+                            }
 
-                        // Нажатие ЛКМ - Опустить рисуемую стрелку на Это блок (сделать связь между блоками)
-                        if (event.buttons.isPrimaryPressed && view.tempArrow.isDraw) {
-                            view.addLink(view.tempArrow.startNode!!, node)
+                            // Нажатие ЛКМ - Опустить рисуемую стрелку на Это блок (сделать связь между блоками)
+                            if (event.buttons.isPrimaryPressed && view.tempArrow.isDraw) {
+                                view.addLink(view.tempArrow.startNode!!, node)
+                            }
                         }
                     }
                 }
             }
         }
-
         .border(width = Dp.Hairline, color = view.defaultBoxColor, shape = RectangleShape)
         .background(Color.White)
-
     ) {
-        Text(text = "Drag me")
+        Text(text = "Drag me #${node.idText}")
         if (showMenu) NodeContextMenu(menuOffset, node, view) { showMenu = false }
     }
 }

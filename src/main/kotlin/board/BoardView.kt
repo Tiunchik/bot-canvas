@@ -1,8 +1,6 @@
 package board
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import board.dto.Graph
@@ -70,7 +68,8 @@ class BoardView(
     fun addLink(src: Node, trg: Node) = coroutineScope.launch { graphDataSource.addLink(selectedGraphUUID, src, trg) }
 
     // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
-    fun deleteAllLinks(node: Node,  direction : Link.Direction)  = coroutineScope.launch { graphDataSource.deleteAllLinks(selectedGraphUUID, node,  direction)}
+    fun deleteAllLinks(node: Node, direction: Link.Direction) =
+        coroutineScope.launch { graphDataSource.deleteAllLinks(selectedGraphUUID, node, direction) }
 
     // TODO: Оборачивать в OperationResult и в случаи не удачи, показывать error popup
     fun deleteNode(node: Node) = coroutineScope.launch { graphDataSource.deleteNode(selectedGraphUUID, node) }

@@ -36,7 +36,7 @@ private val mapSize = 6000.dp
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(0.8f)
-            // Жест перетаскивания карты
+            /* Жест перетаскивания карты */
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
@@ -49,6 +49,7 @@ private val mapSize = 6000.dp
                     )
                 }
             }
+            /* Жест zoom карты */
             .pointerInput(3) {
                 awaitPointerEventScope {
                     while (true) {
@@ -72,6 +73,7 @@ private val mapSize = 6000.dp
             .offset { IntOffset(mapOffset.x.toInt(), mapOffset.y.toInt()) } // Смещаем карту
             .size(mapSize)
             .zIndex(SURFACE_LEVEL)
+            /* жест хз что, предположительно сбор tempArrow в свободном месте */
             .pointerInput(1) {
                 awaitPointerEventScope {
                     //логика рисования линии между нодами после нажатие на создание линии в контексном меню
@@ -85,7 +87,6 @@ private val mapSize = 6000.dp
                     }
                 }
             }
-
         ) {
             DrawGrid(60, 6000f, 6000f)
 
@@ -103,6 +104,22 @@ private val mapSize = 6000.dp
     Canvas(modifier = modifier.zIndex(LINE_LEVEL)) {
         allLinks.forEach { drawArrow(start = it.startNode.center, end = it.endNode.center) }
     }
+
+//@Composable private fun BoardView.drawNodes(modifier: Modifier) {
+////    val temp = remember {  this.uiState.collectAsState() }
+////    val temp1 = remember(this.uiState.value.graph.nodes) { this.uiState.value.graph.nodes }
+////    val temp2 = remember {  this.allNodesUi.collectAsState() }
+////    val temp3 by this.allNodesUi.collectAsState()
+////    println("draw:[ ${temp3.size}]")
+////    temp3.forEach {
+////        println("draw: $it")
+////    temp2.forEach {
+////    this.allNodesUi.forEach {
+//    this.allNodes.forEach {
+//        DraggableNode(modifier = modifier.zIndex(NODE_LEVEL), view = this, node = it)
+////        DraggableNode(modifier = modifier.zIndex(NODE_LEVEL), view = this, renderNode = it)
+//    }
+//}
 
 @Composable private fun BoardView.drawNodes(modifier: Modifier) =
     this.allNodes.forEach {

@@ -3,6 +3,7 @@ package board
 import board.dto.Graph
 import board.dto.Link
 import board.dto.Node
+import board.dto.toLogStr
 import common.Ctx
 import common.compose.launchIO
 import kotlinx.coroutines.CoroutineScope
@@ -99,13 +100,14 @@ class GraphTempFileDataSource(
             return failResult { "Невозможно создать связь которая уже существует!" }
         Link(src, trg).let { link ->
             pushUpdateGraph(copy(links = links + link))
+            println("addLink: $link")
             return Result.success(link)
         }
     }
 
-
-    // TODO: Debug !!! Плавающий баг!
     fun deleteAllLinks(graphUUID: UUID, node: Node, direction: Link.Direction) = getGraphForUpdate(graphUUID) {
+        println("deleteAllLinks: node=${node.idText} direction=$direction")
+        println("deleteAllLinks: links before=${this.links.toLogStr()}")
         copy(
             links = links.filterNot {
                 when (direction) {
@@ -113,17 +115,21 @@ class GraphTempFileDataSource(
                     Link.Direction.OUT -> it.startNode.id == node.id
                 }
             }
-        )
+        ).also { println("deleteAllLinks: links after=${it.links.toLogStr()}") }
+
     }
 
-
-    // TODO: Debug !!! Плавающий баг!
     fun deleteNode(graphUUID: UUID, node: Node) = getGraphForUpdate(graphUUID) {
+        println("deleteNode: node.textId=${node.idText}")
+        println("deleteNode: before=${this.nodes.toLogStr()}")
+        println("deleteNode: before=${this.links.toLogStr()}")
         copy(
             nodes = nodes.filter { it.id != node.id },
             links = links.filter { it.startNode.id != node.id && it.endNode.id != node.id }
-//                links = graph.links.filterNot { it.startNode.id == node.id || it.endNode.id == node.id }
-        )
+        ).also {
+            println("deleteNode: after=${it.nodes.toLogStr()}")
+            println("deleteNode: after=${it.links.toLogStr()}")
+        }
     }
 
     /* PRIVATE API */

@@ -33,8 +33,8 @@ fun TopMenu(view: BoardView) {
 
         Button(onClick = view.executeAsync {
             println("=== RUN LOG ===")
-            view.allNodes.printState("nodes") { "node = $center $id" }
-            view.allLinks.printState("links") { "link = ${startNode.center}=${endNode.center}" }
+            view.allNodes.printState("nodes") { "$this" }
+            view.allLinks.printState("links") { "$this | ${startNode.center}=${endNode.center}" }
             println("=== END LOG ===")
         }) {
             Text("Печать")
